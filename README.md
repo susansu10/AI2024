@@ -11,6 +11,8 @@
 
 # CSIE5400 - HW1
 
+> ![alt text](image.png)
+
 ## Introduction
 
 The code for this project consists of several Python files, some of which you will need to read and understand in order to complete the assignment, and some of which you can ignore. You can download all the code and supporting files as a search.zip.
