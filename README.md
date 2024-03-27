@@ -1,3 +1,7 @@
+All ALG are done.
+
+
+
 # CSIE5400 - HW1
 
 > ![alt text](image.png)
