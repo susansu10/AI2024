@@ -232,7 +232,7 @@ python pacman.py -l mediumCorners -p AStarCornersAgent -z 0.5
 Note: <code>AStarCornersAgent</code> is a shortcut for
 
 ```bash
--p SearchAgent -a fn=aStarSearch,prob=CornersProblem,heuristic=cornersHeuristic
+python pacman.py -l mediumCorners -z .5 -p SearchAgent -a fn=aStarSearch,prob=CornersProblem,heuristic=cornersHeuristic
 ```
 
 **Admissibility vs. Consistency**: Remember, heuristics are just functions that take search states and return numbers that estimate the cost to a nearest goal. More effective heuristics will return values closer to the actual goal costs. To be admissible, the heuristic values must be lower bounds on the actual shortest path cost to the nearest goal (and non-negative). To be consistent, it must additionally hold that if an action has cost c, then taking that action can only cause a drop in heuristic of at most c.

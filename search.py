@@ -83,9 +83,6 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
 
     stack = util.Stack()
     parent = {}
@@ -147,6 +144,33 @@ def breadthFirstSearch(problem: SearchProblem):
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    queue = util.PriorityQueue()
+    visited = set()
+    parent = {}
+    path = []
+    cost = {}
+    
+    queue.push((problem.getStartState(), '', 0), 0)
+    visited.add(problem.getStartState())
+    cost[problem.getStartState()] = 0
+    
+    while not queue.isEmpty():
+        current, action, step = queue.pop()
+        
+        if problem.isGoalState(current):
+            while current in parent:
+                current, action = parent[current]
+                path.append(action)
+            path.reverse()
+            return path
+        
+        for successor, action, step in problem.getSuccessors(current):
+            if successor not in visited or cost[current] + step < cost[successor]:
+                queue.push((successor, action, step), cost[current] + step)
+                visited.add(successor)
+                parent[successor] = (current, action)
+                cost[successor] = cost[current] + step
+    
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -159,6 +183,41 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    
+    def heuristic1(item):
+        state, action, step = item
+        return step + heuristic(state, problem)
+    
+    queue = util.PriorityQueueWithFunction(heuristic1)
+    visited = set()
+    parent = {}
+    path = []
+    cost = {}
+    
+    queue.push((problem.getStartState(), '', 0))
+    visited.add(problem.getStartState())
+    cost[problem.getStartState()] = 0
+    
+    while not queue.isEmpty():
+        current, action, step = queue.pop()
+        
+        if problem.isGoalState(current):
+            while current in parent:
+                current, action = parent[current]
+                path.append(action)
+            path.reverse()
+            return path
+        
+        for successor, action, step in problem.getSuccessors(current):
+            new_cost = cost[current] + heuristic1((successor, action, step))            
+            if successor not in visited or new_cost < cost[successor]:
+
+                queue.push((successor, action, step+cost[current]))
+                visited.add(successor)
+                parent[successor] = (current, action)
+                cost[successor] = new_cost
+    
+    
     util.raiseNotDefined()
 
 
