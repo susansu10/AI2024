@@ -150,6 +150,17 @@ def uniformCostSearch(problem: SearchProblem):
     path = []
     cost = {}
     
+    '''
+    . [.]1 (.)0
+    . . [.]1 
+    . . .
+    
+    .1 [.]2 (.)0
+    . .6 [.]3 
+    . . .5
+    
+    '''
+    
     queue.push((problem.getStartState(), '', 0), 0)
     visited.add(problem.getStartState())
     cost[problem.getStartState()] = 0
@@ -184,17 +195,27 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     
-    def heuristic1(item):
-        state, action, step = item
-        return step + heuristic(state, problem)
+    '''
+    . [.]1+3 (.)0
+    . . [.]1+3 
+    P . .
     
-    queue = util.PriorityQueueWithFunction(heuristic1)
+    .1 [.]2+g() (.)0
+    .3 .6 [.]3 
+    P .1 .1
+    
+    F(x) =  S(x)    + G(x)
+           cost[x] + manhattanDistance(x, goal) 
+    '''
+    
+    
+    queue = util.PriorityQueue()
     visited = set()
     parent = {}
-    path = []
     cost = {}
+    path = []
     
-    queue.push((problem.getStartState(), '', 0))
+    queue.push((problem.getStartState(), '', 0), 0)
     visited.add(problem.getStartState())
     cost[problem.getStartState()] = 0
     
@@ -209,10 +230,12 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
             return path
         
         for successor, action, step in problem.getSuccessors(current):
-            new_cost = cost[current] + heuristic1((successor, action, step))            
+            # F(successor) = S(successor) + G(successor)
+            # S(successor) = cost[current] + step
+            # G(successor) = heuristic(successor, problem)
+            new_cost = cost[current] + step + heuristic(successor, problem)
             if successor not in visited or new_cost < cost[successor]:
-
-                queue.push((successor, action, step+cost[current]))
+                queue.push((successor, action, step), new_cost)
                 visited.add(successor)
                 parent[successor] = (current, action)
                 cost[successor] = new_cost

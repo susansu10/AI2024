@@ -260,6 +260,30 @@ class CornersProblem(search.SearchProblem):
     This search problem finds paths through all four corners of a layout.
 
     You must select a suitable state space and successor function
+    
+    layout:
+    %%%%%%%%
+    %.    .%
+    %   P  %
+    % %%%% %
+    % %    %
+    % % %%%%
+    %.%   .%
+    %%%%%%%%
+    
+    ((x,y), (corners))
+    
+    if set is ((5,1),(5,1)) = ((5,1))
+    if set is ((5,1),((5,1))) = ((5,1),((5,1)))
+    
+    ((1,1), ())
+    ((4,1), ())
+    ((5,1), ((5,1)))
+    ((4,1), ((5,1)))
+    ...
+    ((5,1), ((5,1),(1,top)))
+    ((5,1), ((1,1), (1,top), (right, 1), (right, top)))
+
     """
 
     def __init__(self, startingGameState: pacman.GameState):
@@ -304,8 +328,9 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-
+        
         successors = []
+        # ((), ....) -> ((),())
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             (x, y), visited_corners = state
             dx, dy = Actions.directionToVector(action)
@@ -354,25 +379,36 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     "*** YOUR CODE HERE ***"
     currentNode, visitedCorners = state
     unvisitedCorners = list(set(corners) - set(visitedCorners))
-    cost = 0
-
+    min_cost = 0
+    
+    # TSP, greedy algorithm
     # Use a copy of the current node as the starting point
     current = currentNode
-
+    
     # While there are unvisited corners, find the closest corner and add its distance
     while unvisitedCorners:
         # Find the corner closest to the current node
         distances = [(util.manhattanDistance(current, corner), corner) for corner in unvisitedCorners]
         distance, closestCorner = min(distances)
-
         # Add the distance to the cost
-        cost += distance
-
+        min_cost += distance
         # Move to the closest corner and remove it from the list of unvisited corners
         current = closestCorner
         unvisitedCorners.remove(closestCorner)
     
-    return cost
+    # 4! = 24
+    # import itertools
+    # min_cost = float('inf')
+    # permutations = list(itertools.permutations(unvisitedCorners))
+    # for perm in permutations:
+    #     cost = 0
+    #     perm = [currentNode] + list(perm)
+    #     for i in range(len(perm) - 1):
+    #         cost += util.manhattanDistance(perm[i], perm[i+1])
+    #     if cost < min_cost:
+    #         min_cost = cost
+    
+    return min_cost
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
