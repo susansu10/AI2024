@@ -1,14 +1,3 @@
-###### edit-log
-
-- DFS
-
-  > ![alt text](image-1.png)
-
-- BFS
-  > ![alt text](image-2.png)
-
----
-
 # CSIE5400 - HW1
 
 > ![alt text](image.png)
